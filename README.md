@@ -69,5 +69,5 @@ El solucionador sintético modela el Shikaku como un Problema de Satisfacción d
 Este proyecto fue desarrollado para la materia de Análisis de Algoritmos por:
 
 *   Miguel Laiton
-*   Andrés Espinoza
+*   Daniel Osorio
 *   Diego Villabón
