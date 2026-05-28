@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shikaku Puzzle & Solver</title>
+    <!-- Google Fonts: Outfit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-shapes logo-icon"></i>
+                <h1>SHIKAKU</h1>
+                <span class="badge">Solver & Game</span>
+            </div>
+            <div class="header-actions">
+                <button id="btn-how-to" class="btn btn-secondary">
+                    <i class="fa-solid fa-circle-question"></i> ¿Cómo jugar?
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Layout -->
+        <main class="main-content">
+            
+            <!-- Left Sidebar: Controls -->
+            <section class="control-panel card">
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Panel de Control</h2>
+                
+                <!-- Puzzle Selection -->
+                <div class="control-group">
+                    <label for="select-puzzle">Seleccionar Nivel</label>
+                    <select id="select-puzzle" class="select-input">
+                        <!-- Loaded dynamically -->
+                    </select>
+                </div>
+
+                <!-- Custom Generator -->
+                <div class="control-group generator-group">
+                    <label>Generador Aleatorio</label>
+                    <div class="grid-inputs">
+                        <div class="input-with-label">
+                            <span>Ancho</span>
+                            <input type="number" id="gen-width" min="5" max="20" value="7">
+                        </div>
+                        <div class="input-with-label">
+                            <span>Alto</span>
+                            <input type="number" id="gen-height" min="5" max="20" value="7">
+                        </div>
+                    </div>
+                    <button id="btn-generate" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generar Nuevo
+                    </button>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Mode Select -->
+                <div class="control-group">
+                    <label>Modo de Juego</label>
+                    <div class="toggle-buttons">
+                        <button id="mode-human" class="toggle-btn active">
+                            <i class="fa-solid fa-user"></i> Humano
+                        </button>
+                        <button id="mode-solver" class="toggle-btn">
+                            <i class="fa-solid fa-robot"></i> Sintético
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Solver Controls (Only active in Solver Mode) -->
+                <div id="solver-controls" class="solver-controls-container disabled">
+                    <label>Controles del Solucionador</label>
+                    <div class="solver-actions">
+                        <button id="btn-solve-instant" class="btn btn-accent btn-block">
+                            <i class="fa-solid fa-bolt"></i> Resolver Instantáneo
+                        </button>
+                        <div class="row-buttons">
+                            <button id="btn-solve-animated" class="btn btn-success">
+                                <i class="fa-solid fa-play"></i> Animación
+                            </button>
+                            <button id="btn-solve-step" class="btn btn-secondary">
+                                <i class="fa-solid fa-forward-step"></i> Paso a Paso
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group speed-group">
+                        <div class="slider-label">
+                            <span>Velocidad de Animación</span>
+                            <span id="speed-val">100ms</span>
+                        </div>
+                        <input type="range" id="solver-speed" min="10" max="1000" step="10" value="100">
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Stats and Information -->
+                <div class="stats-panel">
+                    <div class="stat-box">
+                        <span class="stat-label">Tiempo</span>
+                        <span id="stat-time" class="stat-value">00:00</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Rectángulos</span>
+                        <span id="stat-rects" class="stat-value">0 / 0</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-reset" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Reiniciar
+                    </button>
+                    <button id="btn-check" class="btn btn-success">
+                        <i class="fa-solid fa-circle-check"></i> Validar
+                    </button>
+                </div>
+
+            </section>
+
+            <!-- Center/Right: Game Board -->
+            <section class="board-area">
+                <div id="game-status-banner" class="status-banner info">
+                    <i class="fa-solid fa-info-circle"></i> <span>Arrastra el ratón sobre la cuadrícula para dibujar rectángulos.</span>
+                </div>
+
+                <div class="board-wrapper card">
+                    <div id="board-grid" class="board-grid">
+                        <!-- Grid cells will be generated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Help Modal -->
+        <div id="modal-help" class="modal">
+            <div class="modal-content card">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-circle-info"></i> Reglas de Shikaku</h2>
+                    <span class="modal-close" id="modal-close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Shikaku es un rompecabezas lógico que consiste en dividir una cuadrícula en regiones rectangulares o cuadradas siguiendo estas reglas:</p>
+                    <ul>
+                        <li><i class="fa-solid fa-square-check text-accent"></i> Cada rectángulo debe contener exactamente **un número**.</li>
+                        <li><i class="fa-solid fa-square-check text-accent"></i> El **área** del rectángulo (número de celdas) debe ser igual al valor del número que contiene.</li>
+                        <li><i class="fa-solid fa-square-check text-accent"></i> Los rectángulos **no pueden solaparse** entre sí.</li>
+                        <li><i class="fa-solid fa-square-check text-accent"></i> Al finalizar, toda la cuadrícula debe quedar **totalmente cubierta**.</li>
+                    </ul>
+                    <h3>Cómo interactuar (Modo Humano):</h3>
+                    <ul>
+                        <li><i class="fa-solid fa-mouse-pointer"></i> <strong>Dibujar:</strong> Haz click izquierdo en una celda y arrastra hasta la celda diagonal opuesta. Suelta para crear el rectángulo.</li>
+                        <li><i class="fa-solid fa-trash-can"></i> <strong>Borrar:</strong> Haz doble click o click derecho en cualquier rectángulo colocado para eliminarlo.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <p>Proyecto Shikaku Solver &copy; 2026 | Desarrollado con Python backend (DFS + MRV Heuristics) & HTML5/CSS3/JS frontend.</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
